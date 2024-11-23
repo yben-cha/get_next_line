@@ -1,0 +1,48 @@
+Key Concepts:
+
+    File Descriptor (fd):
+        An integer that identifies an open file.
+        Points to a file offset in the file, which is updated after each read() or write().
+
+    File Descriptor Table:
+        Each process has its own file descriptor table, mapping file descriptors to entries in the open file table.
+
+    Open File Table:
+        A system-wide table storing information about open files, such as the file offset and a reference to the file’s inode.
+        Multiple processes can share entries for the same file, but each process has its own file descriptor table.
+
+    Inode Table:
+        Stores metadata for files (e.g., size, permissions, disk location) in inodes.
+        Inodes are referenced by the open file table.
+
+    File Offset:
+        Tracks the current read/write position in a file, stored in the open file table.
+        Updated after each read() or write().
+
+read() System Call:
+
+    Syntax:
+
+    ssize_t read(int fd, void *B, size_t size);
+
+        fd: File descriptor pointing to the file's current position.
+        B: Buffer to store data read from the file.
+        size: Maximum bytes to read from the file.
+        Return Value: Number of bytes successfully read, or 0 if EOF is reached, or -1 on error.
+
+    File Descriptor Behavior: After each read(), the file offset in the open file table moves forward by the number of bytes read.
+
+How They Work Together:
+
+    Opening a File:
+        The file descriptor is created and linked to an entry in the open file table, starting at file offset 0.
+
+    Reading a File:
+        read() uses the file descriptor to find the open file table entry.
+        It reads data from the current file offset, and updates the offset after each operation.
+
+    Multiple File Descriptors:
+        Multiple file descriptors can refer to the same file, but each has its own file offset, allowing independent reading or writing.
+
+    Closing a File:
+        The file descriptor is closed, and the open file table entry is removed.
