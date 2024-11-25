@@ -14,27 +14,27 @@ unsigned long	verfier_in_midlle(char *s)
 	return (i);
 }
 
-int	handle_after(char **after, char **result)
+int	handle_after(char **after, char **result, char c)
 {
 	int		i;
 	char	*curent;
 
-	*result = NULL;
-	i = 0;
+	i = -1;
 	if (*after)
 	{
-		while ((*after)[i])
+		while ((*after)[++i])
 		{
 			if ((*after)[i] == '\n')
 			{
-				(*after)[i++] = '\0';
+				c = (*after)[++i];
+				(*after)[i] = '\0';
 				(*result) = ft_strdup(*after);
+				(*after)[i] = c;
 				curent = (*after);
 				(*after) = ft_strdup((*after) + i);
 				free(curent);
 				return (1);
 			}
-			i++;
 		}
 		*result = ft_strdup(*after);
 		free(*after);
@@ -90,11 +90,13 @@ char	*get_next_line(int fd)
 	char		tmp[BUFFER_SIZE + 1];
 	char		*result;
 	ssize_t		num;
+	char		c;
 
+	result = NULL;
 	num = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (handle_after(&after, &result))
+	if (handle_after(&after, &result, c))
 		return (result);
 	while (num)
 	{
@@ -109,8 +111,9 @@ char	*get_next_line(int fd)
 	return (result);
 }
 #include<stdio.h>
-#include<fcntl.h>
-int main()
+#include <fcntl.h>
+
+int	main(void)
 {
 	int fd = open("test1.text",O_RDONLY);
 	int i=0;
@@ -118,7 +121,7 @@ int main()
 	while(i <9)
 	{
 		curent =get_next_line(fd);
-		printf("%s \n",curent);
+		printf("%s",curent);
 		free(curent);
 		i++;
 	}
