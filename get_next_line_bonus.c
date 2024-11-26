@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yben-cha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/26 01:02:37 by yben-cha          #+#    #+#             */
-/*   Updated: 2024/11/26 01:05:25 by yben-cha         ###   ########.fr       */
+/*   Created: 2024/11/26 01:02:23 by yben-cha          #+#    #+#             */
+/*   Updated: 2024/11/26 01:05:02 by yben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 unsigned long	verfier_in_midlle(char *s)
 {
@@ -95,7 +95,7 @@ int	result_and_after(char **result, char **after, char *tmp)
 
 char	*get_next_line(int fd)
 {
-	static char	*after;
+	static char	*after[1024];
 	char		tmp[BUFFER_SIZE + 1];
 	char		*result;
 	ssize_t		num;
@@ -104,7 +104,7 @@ char	*get_next_line(int fd)
 	num = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (handle_after(&after, &result))
+	if (handle_after(&after[fd], &result))
 		return (result);
 	while (num)
 	{
@@ -115,7 +115,7 @@ char	*get_next_line(int fd)
 			return (NULL);
 		tmp[num] = '\0';
 		join_and_free(&result, tmp);
-		if (result_and_after(&result, &after, tmp))
+		if (result_and_after(&result, &after[fd], tmp))
 			return (result);
 	}
 	return (result);
